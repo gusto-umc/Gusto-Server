@@ -15,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -30,13 +29,6 @@ public class PinServiceImpl implements PinService{
                 .orElseThrow(() -> new GeneralException(Code.MY_CATEGORY_NOT_FOUND));
         Store store = storeRepository.findById(createPin.getStoreId())
                         .orElseThrow(() -> new GeneralException(Code.STORE_NOT_FOUND));
-
-        // 해당 사용자가 이미 해당 가게를 찜했는지 확인합니다.
-        boolean existingPin = pinRepository.existsByUserAndStoreStoreId(user, store.getStoreId());
-
-        if (existingPin) {
-            throw new GeneralException(Code.PIN_ALREADY_EXISTS);
-        }
 
         Pin pin = Pin.builder()
                 .user(user)

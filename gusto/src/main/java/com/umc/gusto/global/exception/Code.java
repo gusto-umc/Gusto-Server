@@ -59,7 +59,6 @@ public enum Code {
     //myCategory 관련 에러 +5
     MY_CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, 404501, "존재하지 않는 카테고리입니다."),
     PIN_NOT_FOUND(HttpStatus.NOT_FOUND, 404502,"존재하지 않는 찜 입니다"),
-    PIN_ALREADY_EXISTS(HttpStatus.CONFLICT, 409502, "이미 해당 가게를 찜했습니다"),
     MY_CATEGORY_DUPLICATE_NAME(HttpStatus.CONFLICT, 409501, "이미 존재하는 카테고리입니다."),
     USER_NO_PERMISSION_FOR_MY_CATEGORY(HttpStatus.FORBIDDEN, 403501, "해당 유저는 해당 카테고리에 대한 권한이 없습니다."),
 
