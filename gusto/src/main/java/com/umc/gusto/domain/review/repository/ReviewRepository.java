@@ -45,6 +45,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     List<Review> findRandomFeedByUser(@Param("user") UUID user); //WHERE r.user_id <> :userZ
 
     boolean existsByStoreAndUserNickname(Store store, String nickname);
+    boolean existsByStore(Store store);
 
     //검색 기능
     @Query("SELECT r FROM Review r WHERE r.status = 'ACTIVE' AND r.skipCheck = false AND r.store.storeName like concat('%', :keyword, '%') OR r.comment like concat('%', :keyword, '%')")

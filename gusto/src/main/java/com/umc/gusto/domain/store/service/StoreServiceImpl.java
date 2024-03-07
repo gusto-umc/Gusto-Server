@@ -131,20 +131,29 @@ public class StoreServiceImpl implements StoreService{
     }
 
     @Transactional(readOnly = true)
-    public List<GetStoresInMapResponse> getStoresInMap(User user, String townName, Long myCategoryId) {
-        List<Long> storeIds;
-        List<Store> stores;
-
+    public List<GetStoresInMapResponse> getStoresInMap(User user, String townName, Long myCategoryId, Boolean visited) {
+        List<Pin> pins = pinRepository.findPinsByUserAndMyCategoryIdAndTownNameAndPinIdDESC(user, myCategoryId, townName);
         if (myCategoryId == null) {
-            storeIds = pinRepository.findStoreIdsByUser(user);
-        } else {
-            storeIds = pinRepository.findStoreIdsByUserAndMyCategoryId(user, myCategoryId);      // 내 카테고리 별 내가 찜한 가게의 id 리스트
+            pins = pinRepository.findPinsByUserAndTownNameAndPinIdDESC(user, townName);
         }
 
-        stores = storeRepository.findByTownNameAndStoreIds(townName, storeIds);
+        List<Store> visitedStatus = new ArrayList<>();
+        for (Pin pin : pins) {
+            Store store = pin.getStore();
+            boolean hasVisited = reviewRepository.existsByStoreAndUserNickname(store, user.getNickname());
+            if (visited) {
+                if (hasVisited) {
+                    visitedStatus.add(store);
+                }
+            } else {
+                if (!hasVisited) {
+                    visitedStatus.add(store);
+                }
+            }
 
+        }
 
-        return stores.stream()
+        return visitedStatus.stream()
                 .map(store -> GetStoresInMapResponse.builder()
                         .storeId(store.getStoreId())
                         .storeName(store.getStoreName())
@@ -152,7 +161,6 @@ public class StoreServiceImpl implements StoreService{
                         .latitude(store.getLatitude())
                         .build())
                 .collect(Collectors.toList());
-
     }
 
     @Transactional(readOnly = true)

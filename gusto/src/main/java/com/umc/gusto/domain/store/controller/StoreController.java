@@ -59,16 +59,18 @@ public class StoreController {
 
     /**
      * 현 지역의 카테고리 별 찜한 가게 목록 조회
-     * [GET] /stores/map?townName={townName}&myCategoryId={myCategoryId}
+     * [GET] /stores/map?townName={townName}&myCategoryId={myCategoryId}&visited={visitStatus}
      */
     @GetMapping("/map")
     public ResponseEntity<List<GetStoresInMapResponse>> getStoresInMap(
             @AuthenticationPrincipal AuthUser authUser,
             @RequestParam(name = "townName") String townName,
-            @RequestParam(name = "myCategoryId", required = false) Long myCategoryId) {
+            @RequestParam(name = "myCategoryId", required = false) Long myCategoryId,
+            @RequestParam(name = "visited", required = false) Boolean visited
+            ) {
 
         User user = authUser.getUser();
-        List<GetStoresInMapResponse> getStoresInMaps = storeService.getStoresInMap(user, townName, myCategoryId);
+        List<GetStoresInMapResponse> getStoresInMaps = storeService.getStoresInMap(user, townName, myCategoryId, visited);
         return  ResponseEntity.status(HttpStatus.OK).body(getStoresInMaps);
     }
 
