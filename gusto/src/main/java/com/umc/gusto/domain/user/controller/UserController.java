@@ -94,8 +94,8 @@ public class UserController {
      * @param signInRequest
      * @return -
      */
-    @PostMapping("/sign-in")
-    public ResponseEntity signIn(@RequestBody SignInRequest signInRequest) {
+    @PostMapping("/sign-up")
+    public ResponseEntity signUp(@RequestBody SignInRequest signInRequest) {
         Tokens tokens = userService.signIn(signInRequest);
 
         HttpHeaders headers = new HttpHeaders();
