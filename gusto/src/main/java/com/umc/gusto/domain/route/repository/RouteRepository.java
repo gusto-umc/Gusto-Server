@@ -37,11 +37,6 @@ public interface RouteRepository extends JpaRepository<Route,Long> {
     int countRoutesByGroupAndStatus(Group group, BaseEntity.Status status);
 
     // 그룹의 루트 목록 조회
-    @Query("select r from Route r where r.group =:group AND r.status =:status AND r.routeId <:routeId ORDER BY r.createdAt DESC ")
+    @Query("select r from Route r where r.group =:group AND r.status =:status AND r.routeId >:routeId ORDER BY r.createdAt")
     Page<Route> findRoutesByGroup(@Param("group") Group group, @Param("routeId") Long routeId ,@Param("status") BaseEntity.Status status, Pageable pageable);
-
-    // 그룹의 루트 첫번째 호출
-    @Query("select r from Route r where r.group =:group AND r.status =:status ORDER BY r.createdAt DESC ")
-    Page<Route> findFirstRoutesByGroup(@Param("group") Group group,@Param("status") BaseEntity.Status status, Pageable pageable);
-
 }

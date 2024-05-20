@@ -43,6 +43,7 @@ public class RouteServiceImpl implements RouteService{
 
     private static final int ROUTE_LIST_PAGE = 6;
 
+
     @Transactional
     @Override
     public void createRoute(RouteRequest request,User user) {
@@ -109,7 +110,7 @@ public class RouteServiceImpl implements RouteService{
                         .build())
                 .collect(Collectors.toList());
         return RoutePagingResponse.builder()
-                .hasNext(routes.hasNext())
+                .hasNest(routes.hasNext())
                 .result(list)
                 .build();
 
@@ -117,32 +118,26 @@ public class RouteServiceImpl implements RouteService{
 
     @Override
     public  RoutePagingResponse getGroupRoute(Long groupId, Long routeId) {
+        if(routeId == null) {
+            routeId = 0L;
+        }
+
         // 그룹 존재 여부 확인
         Group group = groupRepository.findGroupByGroupIdAndStatus(groupId, BaseEntity.Status.ACTIVE)
                 .orElseThrow(()->new GeneralException(Code.FIND_FAIL_GROUP));
 
-        Page<Route> routes;
-        if(routeId == null) {
-            routes = routeRepository.findFirstRoutesByGroup(group, BaseEntity.Status.ACTIVE, Pageable.ofSize(ROUTE_LIST_PAGE));
-        }else{
-            //특정 그룹 내 루트 조회
-            routes = routeRepository.findRoutesByGroup(group, routeId, BaseEntity.Status.ACTIVE, Pageable.ofSize(ROUTE_LIST_PAGE));
-        }
-        return getRoutePagingResponse(routes);
-
-    }
-
-    private RoutePagingResponse getRoutePagingResponse(Page<Route> routes) {
+        //특정 그룹 내 루트 조회
+        Page<Route> routes = routeRepository.findRoutesByGroup(group,routeId,BaseEntity.Status.ACTIVE,Pageable.ofSize(ROUTE_LIST_PAGE));
         List<RouteResponse> list = routes.stream().map(
                         Route -> RouteResponse.builder()
                                 .routeId(Route.getRouteId())
                                 .routeName(Route.getRouteName())
                                 .numStore(routeListRepository.countRouteListByRoute(Route))
-                                .groupId(Route.getGroup().getGroupId())
+                                .groupId(Route.getRouteId())
                                 .build())
                 .collect(Collectors.toList());
         return RoutePagingResponse.builder()
-                .hasNext(routes.hasNext())
+                .hasNest(routes.hasNext())
                 .result(list)
                 .build();
     }
@@ -217,7 +212,7 @@ public class RouteServiceImpl implements RouteService{
                 })
                 .collect(Collectors.toList());
         return RoutePagingResponse.builder()
-                .hasNext(routes.hasNext())
+                .hasNest(routes.hasNext())
                 .result(list)
                 .build();
     }
