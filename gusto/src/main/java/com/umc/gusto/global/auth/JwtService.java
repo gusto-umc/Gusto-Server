@@ -124,4 +124,16 @@ public class JwtService implements InitializingBean {
             throw new GeneralException(Code.EXPIRED_REFRESH_TOKEN);
         }
     }
+
+    public void matchCheckTokens(java.util.UUID uuid, String refreshToken) {
+        try {
+            String refreshUuid = (String) getClaims(refreshToken).get(UUID);
+
+            if(!refreshUuid.equals(String.valueOf(uuid))) {
+                throw new GeneralException(Code.NO_MATCH_TOKENS);
+            }
+        } catch (ExpiredJwtException e) {
+            throw new GeneralException(Code.EXPIRED_REFRESH_TOKEN);
+        }
+    }
 }

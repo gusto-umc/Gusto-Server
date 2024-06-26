@@ -25,7 +25,9 @@ public class GetStoreResponse{
     Double latitude;
     Map<OpeningHours.BusinessDay, Timing> businessDay;
     String contact;
-    List<String> reviewImg3;
+    String img1;
+    String img2;
+    String img3;
     Boolean pin;        // 찜 여부
 
     // 하루 영업 시간을 나타내는 내부 클래스

@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Builder
 @Getter
 @NoArgsConstructor
@@ -14,6 +16,9 @@ public class PinByMyCategoryResponse{
     Long storeId;
     String storeName;
     String address;
-    String reviewImg;
+    List<String> reviewImg3;
+    String img1;
+    String img2;
+    String img3;
     Integer reviewCnt;
 }

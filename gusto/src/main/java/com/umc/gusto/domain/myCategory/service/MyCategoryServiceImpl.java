@@ -9,7 +9,6 @@ import com.umc.gusto.domain.myCategory.model.response.PagingResponse;
 import com.umc.gusto.domain.myCategory.model.response.PinByMyCategoryResponse;
 import com.umc.gusto.domain.myCategory.repository.MyCategoryRepository;
 import com.umc.gusto.domain.myCategory.repository.PinRepository;
-import com.umc.gusto.domain.review.entity.Review;
 import com.umc.gusto.domain.review.repository.ReviewRepository;
 import com.umc.gusto.domain.store.entity.Store;
 import com.umc.gusto.domain.user.entity.User;
@@ -20,6 +19,7 @@ import com.umc.gusto.global.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@EnableScheduling
 public class MyCategoryServiceImpl implements MyCategoryService {
 
     private final MyCategoryRepository myCategoryRepository;
@@ -163,16 +164,18 @@ public class MyCategoryServiceImpl implements MyCategoryService {
         List<PinByMyCategoryResponse> result = pinList.stream()                                     // townName을 기준으로 보일 수 있는 store가 포함된 pin만 보이기
                 .map(pin -> {
                     Store store = pin.getStore();
-                    Optional<Review> topReviewOptional = reviewRepository.findFirstByStoreOrderByLikedDesc(store);               // 가장 좋아요가 많은 review
-                    String reviewImg = topReviewOptional.map(Review::getImg1).orElse("");                               // 가장 좋아요가 많은 review 이미지(TO DO: 3개 출력으로 변경)
-                    Integer reviewCnt = reviewRepository.countByStoreAndUserNickname(store, finalUser.getNickname());                        // 내가 작성한 리뷰의 개수 == 방문 횟수
+                    // 가장 좋아요가 많은 review
+
+                    Integer reviewCnt = reviewRepository.countByStoreAndUserNickname(store, finalUser.getNickname());                                       // 내가 작성한 리뷰의 개수 == 방문 횟수
 
                     return  PinByMyCategoryResponse.builder()
                             .pinId(pin.getPinId())
                             .storeId(store.getStoreId())
                             .storeName(store.getStoreName())
                             .address(store.getAddress())
-                            .reviewImg(reviewImg)
+                            .img1(store.getImg1() != null ? store.getImg1() : "")
+                            .img2(store.getImg2() != null ? store.getImg2() : "")
+                            .img3(store.getImg3() != null ? store.getImg3() : "")
                             .reviewCnt(reviewCnt)
                             .build();
                 })
@@ -183,6 +186,7 @@ public class MyCategoryServiceImpl implements MyCategoryService {
                 .result(result)
                 .build();
     }
+
 
     @Transactional
     public void createMyCategory(User user, CreateMyCategoryRequest createMyCategory) {

@@ -19,8 +19,8 @@ import java.util.UUID;
 public interface ReviewRepository extends JpaRepository<Review, Long> {
     @Query("SELECT r FROM Review r WHERE r.status = 'ACTIVE' AND r.user.publishReview = 'PUBLIC' AND r.store = :store ORDER BY r.liked DESC LIMIT 1")
     Optional<Review> findFirstByStoreOrderByLikedDesc(Store store);
-    @Query("SELECT r FROM Review r WHERE r.status = 'ACTIVE' AND r.user.publishReview = 'PUBLIC' AND r.store = :store ORDER BY r.liked DESC, r.reviewId DESC LIMIT 3")
-    List<Review> findFirst3ByStoreOrderByLikedDesc(Store store);
+//    @Query("SELECT r FROM Review r WHERE r.status = 'ACTIVE' AND r.user.publishReview = 'PUBLIC' AND r.store = :store ORDER BY r.liked DESC, r.reviewId DESC LIMIT 3")
+//    List<Review> findFirst3ByStoreOrderByLikedDesc(Store store);
     @Query("SELECT r FROM Review r WHERE r.status = 'ACTIVE' AND r.user.publishReview = 'PUBLIC' AND r.store = :store ORDER BY r.liked DESC, r.reviewId DESC LIMIT 4")
     List<Review> findFirst4ByStoreOrderByLikedDesc(Store store);
     @Query("SELECT r FROM Review r WHERE r.status = 'ACTIVE' AND r.user.publishReview = 'PUBLIC' AND r.store = :store ORDER BY r.visitedAt DESC, r.reviewId DESC")

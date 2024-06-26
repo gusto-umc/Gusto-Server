@@ -7,6 +7,8 @@ import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Builder
@@ -58,6 +60,14 @@ public class Store extends BaseTime {
     @Column(columnDefinition = "VARCHAR(20)")
     private String contact;
 
+    private String img1;
+
+    private String img2;
+
+    private String img3;
+
+    private String img4;
+
     @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 10)
@@ -66,5 +76,22 @@ public class Store extends BaseTime {
     public enum StoreStatus {
         ACTIVE, INACTIVE, CLOSED
     }
+
+    public void updateImages(List<String> reviewImages) {
+        // reviewImages 리스트에서 이미지를 가져와 각 필드에 할당
+        if (!reviewImages.isEmpty()) {
+            this.img1 = reviewImages.get(0);
+        }
+        if (reviewImages.size() > 1) {
+            this.img2 = reviewImages.get(1);
+        }
+        if (reviewImages.size() > 2) {
+            this.img3 = reviewImages.get(2);
+        }
+        if (reviewImages.size() > 3) {
+            this.img4 = reviewImages.get(3);
+        }
+    }
+
 }
 

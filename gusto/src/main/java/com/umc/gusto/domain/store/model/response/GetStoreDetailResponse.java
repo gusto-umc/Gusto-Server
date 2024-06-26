@@ -20,7 +20,10 @@ public class GetStoreDetailResponse{
     String storeName;
     String address;
     Boolean pin;        // 찜 여부
-    List<String> reviewImg4;
+    String img1;
+    String img2;
+    String img3;
+    String img4;
     PagingResponse reviews;
 
 }

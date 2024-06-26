@@ -15,7 +15,7 @@ import com.umc.gusto.global.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,12 +50,6 @@ public class StoreServiceImpl implements StoreService{
                 );
                 businessDays.put(openingHours.getBusinessDay(), timing);
             }
-
-            List<Review> top3Reviews = reviewRepository.findFirst3ByStoreOrderByLikedDesc(store);
-
-            List<String> reviewImg = top3Reviews.stream()
-                    .map(review -> Optional.ofNullable(review.getImg1()).orElse(""))
-                    .collect(Collectors.toList());
             boolean isPinned = pinRepository.existsByUserAndStoreStoreId(user, storeId);
 
 
@@ -67,7 +61,9 @@ public class StoreServiceImpl implements StoreService{
                     .longitude(store.getLongitude())
                     .latitude(store.getLatitude())
                     .businessDay(businessDays)
-                    .reviewImg3(reviewImg)
+                    .img1(store.getImg1() != null ? store.getImg1() : "")
+                    .img2(store.getImg2() != null ? store.getImg2() : "")
+                    .img3(store.getImg3() != null ? store.getImg3() : "")
                     .pin(isPinned)
                     .build());
         }
@@ -85,11 +81,7 @@ public class StoreServiceImpl implements StoreService{
 //                .orElseThrow(() -> new GeneralException(Code.CATEGORY_NOT_FOUND));
         Long pinId = pinRepository.findByUserAndStoreStoreId(user, storeId);
 
-        List<Review> top4Reviews = reviewRepository.findFirst4ByStoreOrderByLikedDesc(store);
 
-        List<String> reviewImg = top4Reviews.stream()
-                .map(review -> Optional.ofNullable(review.getImg1()).orElse(""))
-                .collect(Collectors.toList());
 
         // reviews 페이징 처리 (3,6,6...)
         int pageSize;
@@ -113,10 +105,10 @@ public class StoreServiceImpl implements StoreService{
                         .nickname(reviewer.getNickname())
                         .liked(review.getLiked())
                         .comment(review.getComment())
-                        .img1(review.getImg1())
-                        .img2(review.getImg2())
-                        .img3(review.getImg3())
-                        .img4(review.getImg4())
+                        .img1(review.getImg1() != null ? review.getImg1() : "")
+                        .img2(review.getImg2() != null ? review.getImg2() : "")
+                        .img3(review.getImg3() != null ? review.getImg1() : "")
+                        .img4(review.getImg4() != null ? review.getImg1() : "")
                         .build();
                 })
                 .toList();
@@ -129,7 +121,10 @@ public class StoreServiceImpl implements StoreService{
                 .categoryString(store.getCategoryString())
                 .storeName(store.getStoreName())
                 .address(store.getAddress())
-                .reviewImg4(reviewImg)
+                .img1(store.getImg1() != null ? store.getImg1() : "")
+                .img2(store.getImg2() != null ? store.getImg2() : "")
+                .img3(store.getImg3() != null ? store.getImg3() : "")
+                .img4(store.getImg4() != null ? store.getImg4() : "")
                 .pin(isPinned)
                 .reviews(PagingResponse.builder()
                     .hasNext(reviews.hasNext())
@@ -241,5 +236,21 @@ public class StoreServiceImpl implements StoreService{
                             .build();
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    @Scheduled(cron = "0 0 0 1,16 * ?")
+    public void updateStoreReviewImages() {
+        List<Store> stores = storeRepository.findAll();
+
+        for (Store store : stores) {
+            List<Review> top4Reviews = reviewRepository.findFirst4ByStoreOrderByLikedDesc(store);
+            List<String> reviewImages = top4Reviews.stream()
+                    .map(Review::getImg1)
+                    .collect(Collectors.toList());
+
+            store.updateImages(reviewImages);
+            storeRepository.save(store);
+        }
     }
 }
