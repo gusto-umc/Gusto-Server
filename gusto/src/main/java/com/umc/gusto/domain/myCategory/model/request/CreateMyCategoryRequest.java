@@ -12,7 +12,7 @@ public class CreateMyCategoryRequest {
     @Size(max=20, message = "카테고리 설명은 20자를 초과할 수 없습니다.")
     String myCategoryScript;
     Integer myCategoryIcon;
-//    PublishStatus publishCategory;            // 데모데이 이후
+    PublishStatus publishCategory;            // 데모데이 이후
     BaseEntity.Status status = BaseEntity.Status.ACTIVE;
 
 }

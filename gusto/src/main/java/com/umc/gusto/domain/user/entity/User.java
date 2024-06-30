@@ -103,7 +103,7 @@ public class User extends BaseTime {
         this.publishReview = status;
     }
 
-    public void updatePublishPin(PublishStatus status) {
+    public void updatePublishCategory(PublishStatus status) {
         this.publishCategory = status;
     }
 

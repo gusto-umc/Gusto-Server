@@ -17,18 +17,18 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
-    @Query("SELECT r FROM Review r WHERE r.status = 'ACTIVE' AND r.user.publishReview = 'PUBLIC' AND r.store = :store ORDER BY r.liked DESC LIMIT 1")
+    @Query("SELECT r FROM Review r WHERE r.user.memberStatus = 'ACTIVE' AND r.status = 'ACTIVE' AND r.user.publishReview = 'PUBLIC' AND r.store = :store ORDER BY r.liked DESC LIMIT 1")
     Optional<Review> findFirstByStoreOrderByLikedDesc(Store store);
-    @Query("SELECT r FROM Review r WHERE r.status = 'ACTIVE' AND r.user.publishReview = 'PUBLIC' AND r.store = :store ORDER BY r.liked DESC, r.reviewId DESC LIMIT 3")
+    @Query("SELECT r FROM Review r WHERE r.user.memberStatus = 'ACTIVE' AND  r.status = 'ACTIVE' AND r.user.publishReview = 'PUBLIC' AND r.store = :store ORDER BY r.liked DESC, r.reviewId DESC LIMIT 3") //
     List<Review> findFirst3ByStoreOrderByLikedDesc(Store store);
-    @Query("SELECT r FROM Review r WHERE r.status = 'ACTIVE' AND r.user.publishReview = 'PUBLIC' AND r.store = :store ORDER BY r.liked DESC, r.reviewId DESC LIMIT 4")
+    @Query("SELECT r FROM Review r WHERE r.user.memberStatus = 'ACTIVE' AND r.status = 'ACTIVE' AND r.user.publishReview = 'PUBLIC' AND r.store = :store ORDER BY r.liked DESC, r.reviewId DESC LIMIT 4") //
     List<Review> findFirst4ByStoreOrderByLikedDesc(Store store);
-    @Query("SELECT r FROM Review r WHERE r.status = 'ACTIVE' AND r.user.publishReview = 'PUBLIC' AND r.store = :store ORDER BY r.visitedAt DESC, r.reviewId DESC")
+    @Query("SELECT r FROM Review r WHERE r.user.memberStatus = 'ACTIVE' AND  r.status = 'ACTIVE' AND r.user.publishReview = 'PUBLIC' AND r.store = :store ORDER BY r.visitedAt DESC, r.reviewId DESC")
     Page<Review> findFirstReviewsByStore(Store store, Pageable pageable);
-    @Query("SELECT r FROM Review r WHERE r.status = 'ACTIVE' AND r.user.publishReview = 'PUBLIC' AND r.store = :store AND r.visitedAt <= :visitedAt AND r.reviewId < :reviewId ORDER BY r.visitedAt DESC, r.reviewId DESC")
+    @Query("SELECT r FROM Review r WHERE r.user.memberStatus = 'ACTIVE' AND r.status = 'ACTIVE' AND r.user.publishReview = 'PUBLIC' AND r.store = :store AND r.visitedAt <= :visitedAt AND r.reviewId < :reviewId ORDER BY r.visitedAt DESC, r.reviewId DESC")
     Page<Review> findReviewsAfterIdByStore(Store store, LocalDate visitedAt, Long reviewId, Pageable pageable);
     boolean existsByReviewIdAndUser(Long reviewId, User user);
-    @Query("SELECT count(r.reviewId) FROM Review r WHERE r.status = 'ACTIVE' AND r.store = :store AND r.user.nickname = :nickname")
+    @Query("SELECT count(r.reviewId) FROM Review r WHERE r.user.memberStatus = 'ACTIVE' AND r.status = 'ACTIVE' AND r.store = :store AND r.user.nickname = :nickname")
     Integer countByStoreAndUserNickname(Store store, String nickname);      // 방문횟수는 리뷰 공개여부과 상관 X
     @Query("SELECT count(r.reviewId) FROM Review r WHERE r.status = 'ACTIVE' AND r.store = :store AND r.user = :user")
     Integer countByStoreAndUser(Store store, User user);

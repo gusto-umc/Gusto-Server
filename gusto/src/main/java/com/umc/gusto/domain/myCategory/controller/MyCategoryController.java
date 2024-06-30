@@ -60,6 +60,11 @@ public class MyCategoryController {
     }
 
     /**
+     * 내 카테고리 공개 상태 업데이트
+     * [
+     */
+
+    /**
      * 내 카테고리 생성
      * [POST] /myCategories
      */

@@ -25,6 +25,8 @@ public interface UserService {
 
     Tokens signIn(SignInRequest signInRequest);
 
+    void signOut(User user, String refreshToken);
+
     // 먹스또 프로필 조회
     FeedProfileResponse getProfile(User user, String nickname);
 

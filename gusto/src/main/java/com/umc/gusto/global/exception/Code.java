@@ -14,6 +14,7 @@ public enum Code {
     //User 관련 에러 +0
     USER_FOLLOW_SELF(HttpStatus.FORBIDDEN, 403001, "자신을 팔로우할 수 없습니다."),
     USER_NOT_FOUND_SELF(HttpStatus.FORBIDDEN, 403002, "자신의 닉네임을 사용해 접근할 수 없습니다."),
+    USER_PUBLISH_CATEGORY_PRIVATE(HttpStatus.FORBIDDEN, 403003, "마이페이지의 publishCategory가 PRIVATE 상태입니다."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, 404001, "존재하지 않는 유저입니다."),
     USER_FOLLOW_NOT_FOUND(HttpStatus.NOT_FOUND, 404002, "팔로우한 유저가 아닙니다."),
     USER_FOLLOW_NO_MORE_CONTENT(HttpStatus.NOT_FOUND, 404003, "리스트가 더이상 존재하지 않습니다."),
@@ -69,9 +70,10 @@ public enum Code {
 
     // token 관련 에러 +6
     INVALID_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, 401601, "유효하지 않은 토큰입니다."),
+    NO_MATCH_TOKENS(HttpStatus.UNAUTHORIZED, 401602, "X-AUTH-TOKEN 정보와 refresh-token 정보가 일치하지 않습니다."),
     INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, 401603, "refresh-token이 유효하지 않습니다."),
     EXPIRED_ACCESS_TOKEN(HttpStatus.FORBIDDEN, 403601, "X-AUTH-TOKEN이 만료되었습니다. 토큰 재발급을 실행해주세요."),
-    EXPIRED_REFRESH_TOKEN(HttpStatus.FORBIDDEN, 403602, "refresh-token이 만료되었습니다. 재로그인이 필요합니다"),
+    EXPIRED_REFRESH_TOKEN(HttpStatus.FORBIDDEN, 403602, "refresh-token이 만료되었습니다. 재로그인이 필요합니다."),
 
     FOR_TEST_ERROR(HttpStatus.BAD_REQUEST,49999, "테스트용 에러")
 
