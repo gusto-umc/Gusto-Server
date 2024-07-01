@@ -139,29 +139,41 @@ public class StoreServiceImpl implements StoreService{
     }
 
     @Transactional(readOnly = true)
-    public List<GetStoresInMapResponse> getStoresInMap(User user, String townName, Long myCategoryId, Boolean visited) {
-        List<Pin> pins = pinRepository.findPinsByUserAndMyCategoryIdAndTownNameAndPinIdDESC(user, myCategoryId, townName);
-        if (myCategoryId == null) {
+    public List<GetStoresInMapResponse> getStoresInMap(User user, String townName, List<Long> myCategoryIds, Boolean visited) {
+        List<Pin> pins = new ArrayList<>();
+        if (myCategoryIds == null || myCategoryIds.isEmpty()) {
             pins = pinRepository.findPinsByUserAndTownNameAndPinIdDESC(user, townName);
-        }
-
-        List<Store> visitedStatus = new ArrayList<>();
-        for (Pin pin : pins) {
-            Store store = pin.getStore();
-            boolean hasVisited = reviewRepository.existsByStoreAndUserNickname(store, user.getNickname());
-            if (visited) {
-                if (hasVisited) {
-                    visitedStatus.add(store);
-                }
-            } else {
-                if (!hasVisited) {
-                    visitedStatus.add(store);
-                }
+        } else {
+            for (Long myCategoryId : myCategoryIds) {
+                pins.addAll(pinRepository.findPinsByUserAndMyCategoryIdAndTownNameAndPinIdDESC(user, myCategoryId, townName));
             }
-
         }
 
-        return visitedStatus.stream()
+        List<Store> pinStores = new ArrayList<>();
+
+        if (visited == null) {
+            pinStores = pins.stream()
+                    .map(Pin::getStore)
+                    .collect(Collectors.toList());
+
+        } else {
+            for (Pin pin : pins) {
+                Store store = pin.getStore();
+                boolean hasVisited = reviewRepository.existsByStoreAndUserNickname(store, user.getNickname());
+                if (visited) {
+                    if (hasVisited) {
+                        pinStores.add(store);
+                    }
+                } else {
+                    if (!hasVisited) {
+                        pinStores.add(store);
+                    }
+                }
+
+            }
+        }
+
+        return pinStores.stream()
                 .map(store -> GetStoresInMapResponse.builder()
                         .storeId(store.getStoreId())
                         .storeName(store.getStoreName())

@@ -12,7 +12,7 @@ public interface StoreService {
 
     List<GetStoreResponse> getStores(User user, List<Long> storeIds);
     GetStoreDetailResponse getStoreDetail(User user, Long storeId, LocalDate visitedAt, Long reviewId);
-    List<GetStoresInMapResponse> getStoresInMap(User user, String townName, Long myCategoryId, Boolean visited);
+    List<GetStoresInMapResponse> getStoresInMap(User user, String townName, List<Long> myCategoryIds, Boolean visited);
     List<GetPinStoreResponse> getPinStoresByCategoryAndLocation(User user, Long myCategoryId, String townName);
     List<GetStoreInfoResponse> searchStore(String keyword);
 }
