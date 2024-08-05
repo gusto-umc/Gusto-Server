@@ -22,7 +22,7 @@ import com.umc.gusto.global.exception.customException.NoPermission;
 import com.umc.gusto.global.exception.customException.NotFoundException;
 import com.umc.gusto.global.exception.customException.PrivateItemException;
 import com.umc.gusto.global.util.S3Service;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -51,6 +51,7 @@ public class ReviewServiceImpl implements ReviewService{
     }
 
     @Override
+    @Transactional
     public void createReview(User user, List<MultipartFile> images, CreateReviewRequest createReviewRequest) {
         Store store= storeRepository.findById(createReviewRequest.getStoreId()).orElseThrow(()-> new NotFoundException(Code.STORE_NOT_FOUND));
         LocalDate visitedAt = createReviewRequest.getVisitedAt();
@@ -130,6 +131,7 @@ public class ReviewServiceImpl implements ReviewService{
     }
 
     @Override
+    @Transactional
     public void deleteReview(User user, Long reviewId) {
         Review review = reviewRepository.findByReviewIdAndStatus(reviewId, BaseEntity.Status.ACTIVE).orElseThrow(()->new NotFoundException(Code.REVIEW_NOT_FOUND));
         review.updateStatus(BaseEntity.Status.INACTIVE);
@@ -139,6 +141,7 @@ public class ReviewServiceImpl implements ReviewService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ReviewDetailResponse getReview(Long reviewId) {
         Review review = reviewRepository.findByReviewIdAndStatus(reviewId, BaseEntity.Status.ACTIVE).orElseThrow(()->new NotFoundException(Code.REVIEW_NOT_FOUND));
         //TODO: 후에 각 리뷰마다의 공개, 비공개를 확인해서 주는거로 수정하기
@@ -178,6 +181,7 @@ public class ReviewServiceImpl implements ReviewService{
     }
 
     @Override
+    @Transactional
     public void unlikeReview(User user, Long reviewId) {
         Review review = reviewRepository.findByReviewIdAndStatus(reviewId, BaseEntity.Status.ACTIVE).orElseThrow(()->new NotFoundException(Code.REVIEW_NOT_FOUND));
 

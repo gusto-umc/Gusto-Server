@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
@@ -25,6 +26,7 @@ public class CollectReviewServiceImpl implements CollectReviewService{
     private final UserRepository userRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public CollectReviewsResponse getReviewOfInstaView(User user, Long reviewId, int size) {
         //페이징해서 가져오기
         Page<Review> reviews = pagingReview(user, reviewId, size);
@@ -42,6 +44,7 @@ public class CollectReviewServiceImpl implements CollectReviewService{
 
 
     @Override
+    @Transactional(readOnly = true)
     public CollectReviewsOfCalResponse getReviewOfCalView(User user, Long reviewId, int size, LocalDate date) {
         //해당 달의 첫 날짜, 마지막 날짜 구하기
         LocalDate startDate = date.with(TemporalAdjusters.firstDayOfMonth());
@@ -54,6 +57,7 @@ public class CollectReviewServiceImpl implements CollectReviewService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public CollectReviewsResponse getReviewOfTimeView(User user, Long reviewId, int size) {
         //페이징해서 가져오기
         Page<Review> reviews = pagingReview(user, reviewId, size);
@@ -75,6 +79,7 @@ public class CollectReviewServiceImpl implements CollectReviewService{
     }
   
     @Override
+    @Transactional(readOnly = true)
     public CollectReviewsResponse getOthersReview(String nickName, Long reviewId, int size) {
         Page<Review> reviews;
         User other = userRepository.findByNicknameAndMemberStatusIs(nickName, User.MemberStatus.ACTIVE).orElseThrow(()-> new NotFoundException(Code.USER_NOT_FOUND));
