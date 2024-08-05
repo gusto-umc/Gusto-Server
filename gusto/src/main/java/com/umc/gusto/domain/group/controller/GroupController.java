@@ -179,7 +179,7 @@ public class GroupController {
     }
 
     /**
-     * 그룹 루트 삭제
+     * 그룹 루트 단일값 삭제
      * [DELETE] /groups/routes/{routeId}??groupId={groupId}
      */
     @DeleteMapping("/routes/{routeId}")

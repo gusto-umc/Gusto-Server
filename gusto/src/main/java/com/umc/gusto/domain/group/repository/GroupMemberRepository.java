@@ -36,6 +36,4 @@ public interface GroupMemberRepository extends JpaRepository<GroupMember, Long> 
     List<Long> findGroupIdsByUser(User user);
     int countGroupMembersByGroup(Group group);
 
-
-
 }

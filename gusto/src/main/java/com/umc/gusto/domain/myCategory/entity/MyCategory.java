@@ -45,7 +45,7 @@ public class MyCategory extends BaseEntity{
     @JoinColumn(name = "userId")
     private User user;
 
-    @OneToMany(mappedBy = "myCategory", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "myCategory", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<Pin> pinList = new ArrayList<>();
 
     public void updateMyCategoryName(String myCategoryName) {

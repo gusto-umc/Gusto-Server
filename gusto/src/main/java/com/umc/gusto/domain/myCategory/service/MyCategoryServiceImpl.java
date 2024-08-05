@@ -259,4 +259,9 @@ public class MyCategoryServiceImpl implements MyCategoryService {
         }
     }
 
+    @Transactional
+    public void hardDeleteAllSoftDeleted() {
+        myCategoryRepository.deleteAllInActive();
+    }
+
 }

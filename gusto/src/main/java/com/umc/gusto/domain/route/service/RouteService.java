@@ -27,4 +27,7 @@ public interface RouteService {
 
     // 루트 공개/비공개 수정
     void  modifyPublishingInfo(User user, Long routeId,boolean publishStatus);
+
+    //
+    void hardDeleteAllSoftDeleted();
 }

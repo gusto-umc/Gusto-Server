@@ -4,12 +4,14 @@ import com.umc.gusto.domain.review.entity.Review;
 import com.umc.gusto.domain.store.entity.Store;
 import com.umc.gusto.domain.user.entity.User;
 import com.umc.gusto.global.common.BaseEntity;
+import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import io.lettuce.core.dynamic.annotation.Param;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -41,7 +43,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     List<Review> findRandomFeedByUser(@Param("user") UUID user); //WHERE r.user_id <> :userZ
 
     boolean existsByStoreAndUserNickname(Store store, String nickname);
-
+  
     /*
         검색 관련
      */
@@ -69,4 +71,10 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     @Query("select r from Review r where r.user = :user and r.status = 'ACTIVE'" +
             "and r.visitedAt < :visitedAt or (r.visitedAt = :visitedAt and r.reviewId < :reviewId)")
     Page<Review> pagingMyReview(User user, Long reviewId, LocalDate visitedAt,PageRequest pageRequest);
+
+    // Hard delete
+    @Transactional
+    @Modifying(clearAutomatically = true)
+    @Query("DELETE FROM Review r WHERE r.status = 'INACTIVE'")
+    int deleteAllInActive();
 }

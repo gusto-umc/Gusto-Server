@@ -1,9 +1,11 @@
 package com.umc.gusto.domain.route.entity;
 
 import com.umc.gusto.domain.store.entity.Store;
-import com.umc.gusto.domain.user.entity.User;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 

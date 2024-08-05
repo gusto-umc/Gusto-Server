@@ -53,4 +53,7 @@ public interface GroupService {
     //그룹 루트 삭제
     void deleteRoute(Long routeId, User user, Long groupId);
 
+    //
+    void hardDeleteAllSoftDeleted();
+
 }

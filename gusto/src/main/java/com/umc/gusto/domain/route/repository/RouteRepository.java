@@ -7,9 +7,12 @@ import com.umc.gusto.global.common.BaseEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface RouteRepository extends JpaRepository<Route,Long> {
@@ -42,7 +45,7 @@ public interface RouteRepository extends JpaRepository<Route,Long> {
 
 
     // 그룹의 루트 개수 조회
-    int countRoutesByGroupAndStatus(Group group, BaseEntity.Status status);
+    List<Route> findRoutesByGroupAndStatus(Group group, BaseEntity.Status status);
 
     // 그룹의 루트 목록 조회
     @Query("select r from Route r where r.group =:group AND r.status ='ACTIVE' AND r.routeId <:routeId ORDER BY r.createdAt DESC ")
@@ -51,5 +54,11 @@ public interface RouteRepository extends JpaRepository<Route,Long> {
     // 그룹의 루트 첫번째 호출
     @Query("select r from Route r where r.group =:group AND r.status = 'ACTIVE' ORDER BY r.createdAt DESC ")
     Page<Route> findFirstRoutesByGroup(@Param("group") Group group, Pageable pageable);
+
+    // Hard delete
+    @Transactional
+    @Modifying(clearAutomatically = true)
+    @Query("DELETE FROM Route r WHERE r.status = 'INACTIVE'")
+    int deleteAllInActive();
 
 }
