@@ -30,7 +30,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("ConstraintViolationException 중 에러 발생"));
 
-        return handleExceptionInternalConstraint(e, Code.valueOf(errorMessage), request);
+        return handleExceptionInternalFalse(e, Code.INVALID_REQUEST, request, errorMessage);
     }
 
     @Override
@@ -83,5 +83,4 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ExceptionResponse<Object> body = ExceptionResponse.from(errorCode, null);
         return super.handleExceptionInternal(e, body, HttpHeaders.EMPTY, errorCode.getHttpStatus(), request);
     }
-
 }

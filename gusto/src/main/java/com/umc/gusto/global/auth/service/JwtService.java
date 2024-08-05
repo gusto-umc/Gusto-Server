@@ -5,9 +5,7 @@ import com.umc.gusto.global.config.secret.JwtConfig;
 import com.umc.gusto.global.exception.Code;
 import com.umc.gusto.global.exception.GeneralException;
 import com.umc.gusto.global.util.RedisService;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
@@ -74,7 +72,7 @@ public class JwtService implements InitializingBean {
     public boolean checkValidationToken(String token) {
         try {
             getClaims(token);
-        } catch (ExpiredJwtException e) {
+        } catch (ExpiredJwtException | SignatureException | UnsupportedJwtException | MalformedJwtException e) {
             throw e;
         } catch (Exception e) {
             return false;

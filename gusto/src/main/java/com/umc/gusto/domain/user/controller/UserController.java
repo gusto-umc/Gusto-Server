@@ -9,11 +9,15 @@ import com.umc.gusto.domain.user.service.UserService;
 import com.umc.gusto.domain.user.model.request.SignUpRequest;
 import com.umc.gusto.global.auth.model.AuthUser;
 import com.umc.gusto.global.auth.model.Tokens;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,6 +25,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
+@Validated
 @RequestMapping("/users")
 public class UserController {
     private final UserService userService;
@@ -34,7 +39,7 @@ public class UserController {
      */
     @PostMapping("/sign-up")
     public ResponseEntity signUp(@RequestPart(name = "profileImg", required = false) MultipartFile multipartFile,
-                         @RequestPart(name = "info") SignUpRequest signUpRequest) {
+                         @RequestPart(name = "info") @Valid SignUpRequest signUpRequest) {
         Tokens tokens = userService.createUser(multipartFile, signUpRequest);
 
         HttpHeaders headers = new HttpHeaders();
@@ -67,7 +72,7 @@ public class UserController {
      * @return -
      */
     @GetMapping("/check-nickname/{nickname}")
-    public ResponseEntity checkNickname(@PathVariable("nickname")String nickname) {
+    public ResponseEntity checkNickname(@PathVariable("nickname") @Size(max = 15, message = "닉네임은 15자를 초과할 수 없습니다.") String nickname) {
         userService.checkNickname(nickname);
 
         return ResponseEntity.ok()
@@ -81,7 +86,7 @@ public class UserController {
      * @return -
      */
     @PostMapping("/confirm-nickname/{nickname}")
-    public ResponseEntity confirmNickname(@PathVariable("nickname")String nickname) {
+    public ResponseEntity confirmNickname(@PathVariable("nickname") @Size(max = 15, message = "닉네임은 15자를 초과할 수 없습니다.") String nickname) {
         userService.confirmNickname(nickname);
 
         return ResponseEntity.ok()
@@ -95,7 +100,7 @@ public class UserController {
      * @return -
      */
     @PostMapping("/sign-in")
-    public ResponseEntity signIn(@RequestBody SignInRequest signInRequest) {
+    public ResponseEntity signIn(@RequestBody @Valid SignInRequest signInRequest) {
         Tokens tokens = userService.signIn(signInRequest);
 
         HttpHeaders headers = new HttpHeaders();
@@ -115,7 +120,7 @@ public class UserController {
      */
     @PostMapping("/sign-out")
     public ResponseEntity signOut(@AuthenticationPrincipal AuthUser authUser,
-                                  @RequestHeader("refresh-Token") String refreshToken) {
+                                  @RequestHeader("refresh-Token") @NotBlank String refreshToken) {
         userService.signOut(authUser.getUser(), refreshToken);
 
         return ResponseEntity.status(HttpStatus.RESET_CONTENT)
@@ -130,7 +135,7 @@ public class UserController {
      */
     @GetMapping("/{nickname}/profile")
     public ResponseEntity<FeedProfileResponse> retrieveProfile(@AuthenticationPrincipal AuthUser authUser,
-                                                               @PathVariable("nickname") String nickname) {
+                                                               @PathVariable("nickname") @Size(max = 15, message = "닉네임은 15자를 초과할 수 없습니다.") String nickname) {
         User user = null;
 
         if(authUser != null) {
@@ -150,7 +155,8 @@ public class UserController {
      * @return
      */
     @PatchMapping("/update-nickname")
-    public ResponseEntity updateNickname(@AuthenticationPrincipal AuthUser authUser, @RequestParam("nickname") String nickname) {
+    public ResponseEntity updateNickname(@AuthenticationPrincipal AuthUser authUser,
+                                         @RequestParam("nickname") @Size(max = 15, message = "닉네임은 15자를 초과할 수 없습니다.") String nickname) {
         userService.updateNickname(authUser.getUser(), nickname);
 
         return ResponseEntity.ok()
@@ -180,7 +186,7 @@ public class UserController {
     @PatchMapping("/my-info")
     public ResponseEntity updateProfile(@AuthenticationPrincipal AuthUser authUser,
                                         @RequestPart(required = false, name = "profileImg") MultipartFile profileImg,
-                                        @RequestPart(required = false, name = "setting") UpdateProfileRequest setting) {
+                                        @RequestPart(required = false, name = "setting") @Valid UpdateProfileRequest setting) {
         userService.updateProfile(authUser.getUser(), profileImg, setting);
 
         return ResponseEntity.status(HttpStatus.RESET_CONTENT)
@@ -194,7 +200,7 @@ public class UserController {
      * @return -
      */
     @PostMapping("/follow/{nickname}")
-    public ResponseEntity followUser(@AuthenticationPrincipal AuthUser authUser, @PathVariable("nickname") String nickname) {
+    public ResponseEntity followUser(@AuthenticationPrincipal AuthUser authUser, @PathVariable("nickname") @Size(max = 15, message = "닉네임은 15자를 초과할 수 없습니다.") String nickname) {
         userService.followUser(authUser.getUser(), nickname);
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -209,7 +215,7 @@ public class UserController {
      * @return -
      */
     @DeleteMapping("/unfollow/{nickname}")
-    public ResponseEntity unfollow(@AuthenticationPrincipal AuthUser authUser, @PathVariable("nickname") String nickname) {
+    public ResponseEntity unfollow(@AuthenticationPrincipal AuthUser authUser, @PathVariable("nickname") @Size(max = 15, message = "닉네임은 15자를 초과할 수 없습니다.") String nickname) {
         userService.unfollowUser(authUser.getUser(), nickname);
 
         return ResponseEntity.status(HttpStatus.RESET_CONTENT)
@@ -237,7 +243,7 @@ public class UserController {
      * @return -
      */
     @PatchMapping("/my-info/publishing")
-    public ResponseEntity updatePublishingInfo(@AuthenticationPrincipal AuthUser authUser, @RequestBody PublishingInfoRequest request) {
+    public ResponseEntity updatePublishingInfo(@AuthenticationPrincipal AuthUser authUser, @RequestBody @Valid PublishingInfoRequest request) {
         userService.updatePublishingInfo(authUser.getUser(), request);
 
         return ResponseEntity.ok()
@@ -252,7 +258,7 @@ public class UserController {
      */
     @GetMapping("/following")
     public ResponseEntity<PagingResponse> followList(@AuthenticationPrincipal AuthUser authUser,
-                                                           @RequestParam(required = false, name = "followId") Long followId) {
+                                                     @RequestParam(required = false, name = "followId") Long followId) {
         PagingResponse pagingResponse = userService.getFollowList(authUser.getUser(), followId);
 
         return ResponseEntity.ok()
@@ -267,7 +273,7 @@ public class UserController {
      */
     @GetMapping("/follower")
     public ResponseEntity<PagingResponse> followerList(@AuthenticationPrincipal AuthUser authUser,
-                                                           @RequestParam(required = false, name = "followId") Long followId) {
+                                                       @RequestParam(required = false, name = "followId") Long followId) {
         PagingResponse pagingResponse = userService.getFollwerList(authUser.getUser(), followId);
 
         return ResponseEntity.ok()
@@ -282,7 +288,7 @@ public class UserController {
      */
     @DeleteMapping("/auth/social-account")
     public ResponseEntity disconnectSocialAccount(@AuthenticationPrincipal AuthUser authUser,
-                                                  @RequestBody SignInRequest signInRequest) {
+                                                  @RequestBody @Valid SignInRequest signInRequest) {
 
         userService.disconnectSocialAccount(authUser.getUser(), signInRequest);
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
@@ -297,7 +303,7 @@ public class UserController {
      */
     @PostMapping("/auth/social-account")
     public ResponseEntity connectSocialAccount(@AuthenticationPrincipal AuthUser authUser,
-                                                  @RequestBody SignInRequest signInRequest) {
+                                               @RequestBody @Valid SignInRequest signInRequest) {
         userService.connectSocialAccount(authUser.getUser(), signInRequest);
 
         return ResponseEntity.status(HttpStatus.CREATED)
