@@ -234,12 +234,8 @@ public class MyCategoryServiceImpl implements MyCategoryService {
             existingMyCategory.updateMyCategoryScript(updateMyCategory.getMyCategoryScript());
         }
 
-        if (updateMyCategory.getPublishCategory() != null) {          // USER의 publishCategory가 PUBLIC이여야만 변경 가능
-            if (user.getPublishCategory().equals(PublishStatus.PUBLIC)) {
-                existingMyCategory.updatePublishCategory(updateMyCategory.getPublishCategory());
-            } else {
-                throw new GeneralException(Code.USER_PUBLISH_CATEGORY_PRIVATE);
-            }
+        if (updateMyCategory.getPublishCategory() != null) {
+            existingMyCategory.updatePublishCategory(updateMyCategory.getPublishCategory());
         }
 
         myCategoryRepository.save(existingMyCategory);
