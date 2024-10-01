@@ -205,4 +205,9 @@ public class ReviewServiceImpl implements ReviewService{
         if(imageUrls.size()>3) review.updateImg4(imageUrls.get(3));
     }
 
+    @Transactional
+    public void hardDeleteAllSoftDeleted() {
+        reviewRepository.deleteAllInActive();
+    }
+
 }

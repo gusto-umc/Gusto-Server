@@ -125,6 +125,8 @@ public class RouteServiceImpl implements RouteService{
         //루트 삭제 : soft delete // TODO:DB 최종 삭제 주기 체크
         route.updateStatus(BaseEntity.Status.INACTIVE);
 
+
+
     }
 
     @Override
@@ -267,4 +269,9 @@ public class RouteServiceImpl implements RouteService{
         route.updatePublishRoute(publishStatus? PublishStatus.PUBLIC: PublishStatus.PRIVATE);
     }
 
+
+    @Transactional
+    public void hardDeleteAllSoftDeleted() {
+        routeRepository.deleteAllInActive();
+    }
 }

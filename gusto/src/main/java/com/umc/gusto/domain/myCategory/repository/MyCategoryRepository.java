@@ -5,7 +5,9 @@ import com.umc.gusto.domain.user.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,4 +30,10 @@ public interface MyCategoryRepository extends JpaRepository<MyCategory, Long> {
     @Query("SELECT m FROM MyCategory m WHERE m.status = 'ACTIVE' AND m.myCategoryId = :myCategoryId AND m.user = :user")
     Optional<MyCategory> findByUserAndMyCategoryId(User user, Long myCategoryId);
     List<MyCategory> findByUser(User user);
+
+    // Hard delete
+    @Transactional
+    @Modifying(clearAutomatically = true)
+    @Query("DELETE FROM MyCategory m  WHERE m.status = 'INACTIVE'")
+    int deleteAllInActive();
 }

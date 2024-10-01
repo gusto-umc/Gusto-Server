@@ -141,6 +141,13 @@ public class GroupServiceImpl implements GroupService{
             throw new GeneralException(Code.UNAUTHORIZED_DELETE_GROUP);
         }
 
+        // 그룹 삭제 시 루트 INACTIVE
+        List<Route> groupRoute = routeRepository.findRoutesByGroupAndStatus(group, BaseEntity.Status.ACTIVE);
+        for (Route route : groupRoute) {
+            route.updateStatus(BaseEntity.Status.INACTIVE);
+            routeRepository.save(route);
+        }
+
         // 그룹 삭제
         group.updateStatus(BaseEntity.Status.INACTIVE);
     }
@@ -198,7 +205,7 @@ public class GroupServiceImpl implements GroupService{
         List<GetGroupsResponse> responses = groups.map(group -> {
                     int numMembers = groupMemberRepository.countGroupMembersByGroup(group);
                     int numRestaurants = groupListRepository.countGroupListsByGroup(group);
-                    int numRoutes = routeRepository.countRoutesByGroupAndStatus(group, BaseEntity.Status.ACTIVE);
+                    int numRoutes = routeRepository.findRoutesByGroupAndStatus(group, BaseEntity.Status.ACTIVE).size();
 
                     return GetGroupsResponse.builder()
                             .groupId(group.getGroupId())
@@ -301,6 +308,22 @@ public class GroupServiceImpl implements GroupService{
     }
 
     @Override
+    public void deleteRoute(Long routeId, User user, Long groupId) {
+        // 그룹 구성원인지 확인
+        Group group = groupRepository.findGroupByGroupIdAndStatus(groupId, BaseEntity.Status.ACTIVE)
+                .orElseThrow(()->new GeneralException(Code.FIND_FAIL_GROUP));
+        if(!groupMemberRepository.existsGroupMemberByGroupAndUser(group,user)){
+            throw new GeneralException(Code.USER_NOT_IN_GROUP);
+        }
+
+        Route route = routeRepository.findRouteByRouteIdAndStatus(routeId, BaseEntity.Status.ACTIVE)
+                .orElseThrow(() -> new GeneralException(Code.ROUTE_NOT_FOUND));
+        //루트 삭제 : soft delete
+        route.updateStatus(BaseEntity.Status.INACTIVE);
+
+    }
+
+    @Override
     public void createGroupList(Long groupId,GroupListRequest request,User user) {
         // 그룹 존재 여부 확인
         Group group = groupRepository.findGroupByGroupIdAndStatus(groupId, BaseEntity.Status.ACTIVE)
@@ -380,19 +403,10 @@ public class GroupServiceImpl implements GroupService{
 
     }
 
-    @Override
-    public void deleteRoute(Long routeId, User user, Long groupId) {
-        // 그룹 구성원인지 확인
-        Group group = groupRepository.findGroupByGroupIdAndStatus(groupId, BaseEntity.Status.ACTIVE)
-                .orElseThrow(()->new GeneralException(Code.FIND_FAIL_GROUP));
-        if(!groupMemberRepository.existsGroupMemberByGroupAndUser(group,user)){
-            throw new GeneralException(Code.USER_NOT_IN_GROUP);
-        }
-
-        Route route = routeRepository.findRouteByRouteIdAndStatus(routeId, BaseEntity.Status.ACTIVE)
-                .orElseThrow(() -> new GeneralException(Code.ROUTE_NOT_FOUND));
-        //루트 삭제 : soft delete // TODO:DB 최종 삭제 주기 체크
-        route.updateStatus(BaseEntity.Status.INACTIVE);
+    @Transactional
+    public void hardDeleteAllSoftDeleted() {
+        groupRepository.deleteAllInActive();
 
     }
+
 }
