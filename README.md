@@ -1,2 +1,18 @@
-# Gusto-Server
-Gusto(구스또)의 Server Repository (Spring)
+<img width="3840" height="2160" alt="page_1" src="https://github.com/user-attachments/assets/45f8fae5-b57b-4b0b-afdd-755eedc64688" />
+<img width="3840" height="2160" alt="page_2" src="https://github.com/user-attachments/assets/61da7db6-b309-4cc1-81e3-d99ab2559e46" />
+<img width="3840" height="2160" alt="page_3" src="https://github.com/user-attachments/assets/192bfbf0-7bcc-4f95-9a2f-0f830a5e2c2d" />
+<img width="3840" height="2160" alt="page_4" src="https://github.com/user-attachments/assets/cc49c76c-7e3b-454a-a219-6695af3adbf3" />
+<img width="3840" height="2160" alt="page_5" src="https://github.com/user-attachments/assets/e7ef191d-c1f2-48ad-a711-a81fbc91a189" />
+<img width="3848" height="2160" alt="page_6" src="https://github.com/user-attachments/assets/2b33c217-d520-44d3-9c25-adfbe8d6a5fb" />
+<img width="3848" height="2160" alt="page_7" src="https://github.com/user-attachments/assets/46865013-d7e7-4ea3-b7ad-c26d1a26892a" />
+<img width="3848" height="2160" alt="page_8" src="https://github.com/user-attachments/assets/bd4643e6-bcb4-42ed-8e1b-426f62a37f1e" />
+<img width="3848" height="2160" alt="page_9" src="https://github.com/user-attachments/assets/24b30efa-1f72-4c5b-9fc9-382f643a0790" />
+<img width="3848" height="2160" alt="page_10" src="https://github.com/user-attachments/assets/f7ba64a9-3f3e-4ca5-b380-40a392ff1035" />
+<img width="3848" height="2160" alt="page_11" src="https://github.com/user-attachments/assets/c8d66f68-afbc-4a8d-bafe-66da1019e876" />
+<img width="3848" height="2160" alt="page_12" src="https://github.com/user-attachments/assets/dc137db7-84ec-4d39-9c1c-9bf6b3745b8d" />
+<img width="3848" height="2160" alt="page_13" src="https://github.com/user-attachments/assets/0a393aa6-15e6-4c1c-bca9-b28e62c7ef30" />
+<img width="3848" height="2160" alt="page_14" src="https://github.com/user-attachments/assets/15b917f0-b2b6-4c80-a06b-70de7fc983d6" />
+<img width="3848" height="2160" alt="page_15" src="https://github.com/user-attachments/assets/02074912-c6cc-4019-b36b-bc1f4bb15794" />
+<img width="3848" height="2160" alt="page_16" src="https://github.com/user-attachments/assets/ecf0fcbc-81f1-492d-978d-6b1b50bcc39e" />
+<img width="3848" height="2160" alt="page_17" src="https://github.com/user-attachments/assets/0257cc68-294a-40c7-b136-99b798d1b2c7" />
+<img width="3848" height="2160" alt="page_18" src="https://github.com/user-attachments/assets/da2165ff-2649-43cb-bef1-3ea5568de3e7" />
